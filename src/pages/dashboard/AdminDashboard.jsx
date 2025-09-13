@@ -155,6 +155,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       </nav>
+      
 
       <div className="flex">
         
@@ -180,6 +181,7 @@ const AdminDashboard = () => {
             })}
           </div>
         </div>
+        
 
         {/* Main Content */}
         <div className="flex-1 p-6 space-y-6">
@@ -264,6 +266,7 @@ const AdminDashboard = () => {
 </ResponsiveContainer>
 
                 </div>
+                
 
   
                 <div className={`${darkMode ? 'bg-gray-800' : 'bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-50/80 backdrop-blur-sm'} 
@@ -378,6 +381,14 @@ const AdminDashboard = () => {
               </div>
             </>
           )}
+          <button
+      onClick={() => alert('See All Plans clicked')}
+      className="w-full flex items-center space-x-3 p-3 rounded-xl mb-2 transition-all duration-200 
+                 bg-gradient-to-r from-indigo-500 to-blue-600 text-white shadow-lg hover:scale-105"
+    >
+      <Users size={20} />
+      {sidebarOpen && <span className="font-medium">See All Plans</span>}
+    </button>
 
           {activeTab === 'logs' && (
             <div className={`${darkMode ? 'bg-gray-800' : 'bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-50/80 backdrop-blur-sm'} 
