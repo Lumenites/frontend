@@ -1,4 +1,4 @@
-# Subscription Management System
+# Subscription Management System 
 
 A modern, responsive subscription management system with separate dashboards for Users and Admins, built with React and Tailwind CSS.
 
