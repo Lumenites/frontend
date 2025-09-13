@@ -96,7 +96,7 @@ const Navbar = () => {
                     {isRoute ? (
                       <Link
                         to={link}
-                        className="text-xl font-semibold py-2 transition-colors duration-500 hover:text-primary hover:underline hover:underline-offset-4"
+                        className="text-xl font-semibold py-2 transition-colors duration-500 hover:text-primary"
                       >
                         {name}
                       </Link>
@@ -164,7 +164,7 @@ const Navbar = () => {
                         <Link
                           to={link}
                           onClick={toggleMenu}
-                          className="block text-lg font-semibold py-2 transition-colors duration-500 hover:text-primary hover:underline hover:underline-offset-4"
+                          className="block text-lg font-semibold py-2 transition-colors duration-500 hover:text-primary"
                         >
                           {name}
                         </Link>
