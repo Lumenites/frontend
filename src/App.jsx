@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./Components/Navbar/Navbar";
 import Hero from "./Components/Hero/Hero";
@@ -8,15 +8,23 @@ import Banner2 from "./Components/Banner/Banner2";
 import Features from "./Components/Features/Features";
 import AppStore from "./Components/AppStore/AppStore";
 import Footer from "./Components/Footer/Footer";
+import PopupPlayer from "./Components/PopupPlayer/PopupPlayer";
 import Chatbot from "./Components/Chatbot/Chatbot";
 import LoginPage from "./Pages/LoginPage";
 import SignupPage from "./Pages/SignupPage";
 import Dashboard from "./Pages/Dashboard";
+import UserDashboard from "./Pages/UserDashboard";
+import PlansPage from "./Pages/PlansPage";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 const HomePage = () => {
+  const [isPlay, setIsPlay] = useState(false);
+
+  const togglePlay = () => {
+    setIsPlay(!isPlay);
+  };
 
   useEffect(() => {
     AOS.init({
@@ -33,7 +41,7 @@ const HomePage = () => {
       <Navbar />
       {/* spacer for fixed navbar height */}
       <div className="h-16" />
-      <section id="home"><Hero /></section>
+      <section id="home"><Hero togglePlay={togglePlay} /></section>
       <section id="explore"><Quotes /></section>
       <section id="explore-2"><Banner /></section>
       <section id="explore-3"><Banner2 /></section>
@@ -41,6 +49,9 @@ const HomePage = () => {
       <section id="contact"><AppStore /></section>
       <Footer />
       <Chatbot />
+
+      {/* Video Player */}
+      <PopupPlayer isPlay={isPlay} togglePlay={togglePlay} />
     </main>
   );
 };
@@ -53,6 +64,8 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
+        <Route path="/plans" element={<PlansPage />} />
       </Routes>
     </Router>
   );

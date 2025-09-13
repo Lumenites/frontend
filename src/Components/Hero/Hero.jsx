@@ -1,7 +1,8 @@
 import React from "react";
 import ModelCanvas from "../Three/ModelCanvas";
+import { BiPlayCircle } from "react-icons/bi";
 
-const Hero = () => {
+const Hero = ({ togglePlay }) => {
   return (
     <>
       <div className="py-12 sm:py-0 dark:bg-dark dark:text-white duration-300 overflow-hidden">

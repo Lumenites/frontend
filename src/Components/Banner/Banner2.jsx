@@ -1,3 +1,4 @@
+import React from "react";
 const BANNER_3D_2 = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop";
 const BANNER_3D_2_FALLBACK = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop";
 

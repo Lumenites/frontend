@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar/Navbar";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   return (
     <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white duration-300">
       <Navbar />
@@ -33,7 +36,10 @@ const Dashboard = () => {
               <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Manage your personal settings, view your activity, and customize your experience.
               </p>
-              <button className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-300">
+              <button 
+                onClick={() => navigate("/user-dashboard")}
+                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-300"
+              >
                 Access User Dashboard
               </button>
             </div>
