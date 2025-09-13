@@ -82,7 +82,7 @@ const Dashboard = () => {
 								and monitor system performance.
 							</p>
 							<Link
-								to="/AdminDiscounts"
+								to="/AdminDashboard"
 								className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
 							>
 								Access Admin Dashboard
