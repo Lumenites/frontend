@@ -293,13 +293,20 @@ router.get('/overview', async (req, res) => {
 
 // @route   POST /api/dashboard/switch-plan
 // @desc    Switch user's subscription plan
-// @access  Private
+// @access  Public (using demo user)
 router.post('/switch-plan', async (req, res) => {
   try {
     const { planId } = req.body;
 
     if (!planId) {
       return res.status(400).json({ message: 'Plan ID is required' });
+    }
+
+    // Find the demo user
+    const user = await User.findOne({ email: 'demo@example.com' });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
     // Verify plan exists
@@ -309,8 +316,8 @@ router.post('/switch-plan', async (req, res) => {
     }
 
     // Update user subscription
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
       {
         'subscription.planId': planId,
         'subscription.status': 'active',
@@ -322,7 +329,7 @@ router.post('/switch-plan', async (req, res) => {
 
     // Create notification
     await Notification.create({
-      userId: req.user._id,
+      userId: user._id,
       type: 'system',
       title: 'Plan Updated',
       message: `Successfully switched to ${plan.name}`,
@@ -331,7 +338,7 @@ router.post('/switch-plan', async (req, res) => {
 
     res.json({
       message: 'Plan switched successfully',
-      subscription: user.subscription
+      subscription: updatedUser.subscription
     });
   } catch (error) {
     console.error('Switch plan error:', error);
@@ -341,11 +348,19 @@ router.post('/switch-plan', async (req, res) => {
 
 // @route   POST /api/dashboard/cancel-subscription
 // @desc    Cancel user's subscription
-// @access  Private
+// @access  Public (using demo user)
 router.post('/cancel-subscription', async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
+    // Find the demo user
+    const user = await User.findOne({ email: 'demo@example.com' });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update user subscription status
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
       {
         'subscription.status': 'cancelled'
       },
@@ -354,7 +369,7 @@ router.post('/cancel-subscription', async (req, res) => {
 
     // Create notification
     await Notification.create({
-      userId: req.user._id,
+      userId: user._id,
       type: 'system',
       title: 'Subscription Cancelled',
       message: 'Your subscription has been cancelled. You will retain access until the end of your current billing period.',
@@ -363,7 +378,7 @@ router.post('/cancel-subscription', async (req, res) => {
 
     res.json({
       message: 'Subscription cancelled successfully',
-      subscription: user.subscription
+      subscription: updatedUser.subscription
     });
   } catch (error) {
     console.error('Cancel subscription error:', error);
@@ -373,13 +388,20 @@ router.post('/cancel-subscription', async (req, res) => {
 
 // @route   POST /api/dashboard/apply-offer
 // @desc    Apply an offer code
-// @access  Private
+// @access  Public (using demo user)
 router.post('/apply-offer', async (req, res) => {
   try {
     const { offerCode } = req.body;
 
     if (!offerCode) {
       return res.status(400).json({ message: 'Offer code is required' });
+    }
+
+    // Find the demo user
+    const user = await User.findOne({ email: 'demo@example.com' });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
     const offer = await Offer.findOne({ 
@@ -396,7 +418,7 @@ router.post('/apply-offer', async (req, res) => {
     }
 
     // Check if user is eligible
-    if (offer.conditions.newUsersOnly && req.user.subscription.status !== 'trial') {
+    if (offer.conditions.newUsersOnly && user.subscription.status !== 'trial') {
       return res.status(400).json({ message: 'This offer is only for new users' });
     }
 
@@ -406,7 +428,7 @@ router.post('/apply-offer', async (req, res) => {
 
     // Create notification
     await Notification.create({
-      userId: req.user._id,
+      userId: user._id,
       type: 'offer',
       title: 'Offer Applied',
       message: `Successfully applied offer ${offer.code}. ${offer.discountValue}${offer.discountType === 'percentage' ? '%' : '$'} discount will be applied to your next billing.`,
@@ -431,13 +453,20 @@ router.post('/apply-offer', async (req, res) => {
 
 // @route   PUT /api/dashboard/dismiss-notification/:id
 // @desc    Dismiss a notification
-// @access  Private
+// @access  Public (using demo user)
 router.put('/dismiss-notification/:id', async (req, res) => {
   try {
+    // Find the demo user
+    const user = await User.findOne({ email: 'demo@example.com' });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
     const notification = await Notification.findOneAndUpdate(
       { 
         _id: req.params.id, 
-        userId: req.user._id 
+        userId: user._id 
       },
       { isDismissed: true },
       { new: true }
