@@ -5,57 +5,68 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("auth_token");
-    if (!token) {
+    const storedToken = localStorage.getItem("auth_token");
+    if (!storedToken) {
       setLoading(false);
       return;
     }
-    api.me(token)
+    setToken(storedToken);
+    api.me(storedToken)
       .then((data) => {
         setUser(data.user || data);
       })
       .catch(() => {
         localStorage.removeItem("auth_token");
+        setToken(null);
       })
       .finally(() => setLoading(false));
   }, []);
 
   const login = async (email, password) => {
     const res = await api.login({ email, password });
-    const token = res.token || res.accessToken;
-    if (token) localStorage.setItem("auth_token", token);
+    const authToken = res.token || res.accessToken;
+    if (authToken) {
+      localStorage.setItem("auth_token", authToken);
+      setToken(authToken);
+    }
     setUser(res.user || res);
     return res;
   };
 
-  const signup = async (username, email, password) => {
-    const res = await api.signup({ username, email, password });
-    const token = res.token || res.accessToken;
-    if (token) localStorage.setItem("auth_token", token);
+  const signup = async (name, email, password) => {
+    const res = await api.signup({ name, email, password });
+    const authToken = res.token || res.accessToken;
+    if (authToken) {
+      localStorage.setItem("auth_token", authToken);
+      setToken(authToken);
+    }
     setUser(res.user || res);
     return res;
   };
 
   const signout = async () => {
-    const token = localStorage.getItem("auth_token");
-    try { if (token) await api.logout(token); } catch {}
+    const authToken = localStorage.getItem("auth_token");
+    try { if (authToken) await api.logout(authToken); } catch {}
     localStorage.removeItem("auth_token");
+    setToken(null);
     setUser(null);
   };
 
   const value = useMemo(() => ({
     user,
+    token,
     loading,
     error,
     setError,
     login,
     signup,
     logout: signout,
-  }), [user, loading, error]);
+  }), [user, token, loading, error]);
 
   return (
     <AuthContext.Provider value={value}>

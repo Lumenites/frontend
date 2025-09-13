@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 async function request(path, { method = "GET", body, token, headers } = {}) {
   const url = `${API_BASE_URL}${path}`;
@@ -26,10 +26,22 @@ async function request(path, { method = "GET", body, token, headers } = {}) {
 
 export const api = {
   // Auth endpoints
-  signup: (payload) => request("/auth/signup", { method: "POST", body: payload }),
+  signup: (payload) => request("/auth/register", { method: "POST", body: payload }),
   login: (payload) => request("/auth/login", { method: "POST", body: payload }),
   me: (token) => request("/auth/me", { method: "GET", token }),
-  logout: (token) => request("/auth/logout", { method: "POST", token }),
+  updateProfile: (payload, token) => request("/auth/profile", { method: "PUT", body: payload, token }),
+  
+  // Dashboard endpoints
+  getDashboardData: () => request("/dashboard/overview", { method: "GET" }),
+  switchPlan: (payload) => request("/dashboard/switch-plan", { method: "POST", body: payload }),
+  cancelSubscription: () => request("/dashboard/cancel-subscription", { method: "POST" }),
+  applyOffer: (payload) => request("/dashboard/apply-offer", { method: "POST", body: payload }),
+  dismissNotification: (notificationId) => request(`/dashboard/dismiss-notification/${notificationId}`, { method: "PUT" }),
+  
+  // Plans endpoints
+  getPlans: () => request("/plans", { method: "GET" }),
+  getPlan: (planId) => request(`/plans/${planId}`, { method: "GET" }),
+  getRecommendedPlans: (token) => request("/plans/recommended", { method: "GET", token }),
 };
 
 export default API_BASE_URL;

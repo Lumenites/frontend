@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar/Navbar";
-import { plans, currentSubscription, offers, notifications } from "../utils/dummyData";
+import { api } from "../lib/api";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
@@ -9,9 +9,27 @@ const UserDashboard = () => {
   const [dismissedNotifications, setDismissedNotifications] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [error, setError] = useState(null);
 
-  const currentPlan = plans.find(plan => plan.id === currentSubscription.planId);
-  const usagePercentage = (currentSubscription.used / currentSubscription.quota) * 100;
+  // Load dashboard data on component mount
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      const data = await api.getDashboardData();
+      setDashboardData(data);
+    } catch (err) {
+      console.error('Error loading dashboard data:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const showToastNotification = (message) => {
     setToastMessage(message);
@@ -33,28 +51,95 @@ const UserDashboard = () => {
     setShowCancelModal(true);
   };
 
-  const confirmCancel = () => {
-    setShowCancelModal(false);
-    showToastNotification("Subscription cancelled successfully");
+  const confirmCancel = async () => {
+    try {
+      await api.cancelSubscription();
+      setShowCancelModal(false);
+      showToastNotification("Subscription cancelled successfully");
+      loadDashboardData(); // Refresh data
+    } catch (err) {
+      showToastNotification(`Error: ${err.message}`);
+    }
   };
 
   const handleRenew = () => {
     showToastNotification("Plan renewed successfully! New billing date: January 15, 2025");
   };
 
-  const handleSwitchPlan = (planId) => {
-    const plan = plans.find(p => p.id === planId);
-    showToastNotification(`Switched to ${plan.name} successfully!`);
+  const handleSwitchPlan = async (planId) => {
+    try {
+      await api.switchPlan({ planId });
+      showToastNotification("Plan switched successfully!");
+      loadDashboardData(); // Refresh data
+    } catch (err) {
+      showToastNotification(`Error: ${err.message}`);
+    }
   };
 
-  const handleApplyOffer = (offer) => {
-    showToastNotification(`Offer ${offer.code} applied successfully! ${offer.discount}% discount will be applied to your next billing.`);
+  const handleApplyOffer = async (offer) => {
+    try {
+      await api.applyOffer({ offerCode: offer.code });
+      showToastNotification(`Offer ${offer.code} applied successfully! ${offer.discountValue}${offer.discountType === 'percentage' ? '%' : '$'} discount will be applied to your next billing.`);
+      loadDashboardData(); // Refresh data
+    } catch (err) {
+      showToastNotification(`Error: ${err.message}`);
+    }
   };
 
-  const dismissNotification = (notificationId) => {
-    setDismissedNotifications([...dismissedNotifications, notificationId]);
+  const dismissNotification = async (notificationId) => {
+    try {
+      await api.dismissNotification(notificationId);
+      setDismissedNotifications([...dismissedNotifications, notificationId]);
+      loadDashboardData(); // Refresh data
+    } catch (err) {
+      showToastNotification(`Error: ${err.message}`);
+    }
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white duration-300">
+        <Navbar />
+        <div className="h-16" />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <main className="min-h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white duration-300">
+        <Navbar />
+        <div className="h-16" />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <p className="text-red-600 dark:text-red-400 mb-4">Error loading dashboard: {error}</p>
+              <button 
+                onClick={loadDashboardData}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!dashboardData) return null;
+
+  const { currentSubscription, recommendedPlans, offers, notifications } = dashboardData;
   const activeNotifications = notifications.filter(notif => !dismissedNotifications.includes(notif.id));
 
   return (
@@ -110,14 +195,14 @@ const UserDashboard = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    {currentPlan.name}
+                    {currentSubscription.planName}
                   </h3>
                   <p className="text-3xl font-bold text-primary mb-2">
-                    {currentPlan.price}
+                    ${currentSubscription.price}
                     <span className="text-sm font-normal text-gray-500 dark:text-gray-400">/month</span>
                   </p>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {currentPlan.quota} storage included
+                    {currentSubscription.quota}GB storage included
                   </p>
                 </div>
                 
@@ -130,14 +215,14 @@ const UserDashboard = () => {
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                       <div
                         className={`h-3 rounded-full transition-all duration-300 ${
-                          usagePercentage > 90 ? 'bg-red-500' : 
-                          usagePercentage > 70 ? 'bg-yellow-500' : 'bg-green-500'
+                          currentSubscription.usagePercentage > 90 ? 'bg-red-500' : 
+                          currentSubscription.usagePercentage > 70 ? 'bg-yellow-500' : 'bg-green-500'
                         }`}
-                        style={{ width: `${usagePercentage}%` }}
+                        style={{ width: `${currentSubscription.usagePercentage}%` }}
                       ></div>
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {usagePercentage.toFixed(1)}% used
+                      {currentSubscription.usagePercentage.toFixed(1)}% used
                     </p>
                   </div>
                   
@@ -182,8 +267,7 @@ const UserDashboard = () => {
               </h2>
               
               <div className="grid md:grid-cols-2 gap-4">
-                {plans
-                  .filter(plan => plan.id !== currentSubscription.planId)
+                {recommendedPlans
                   .slice(0, 2)
                   .map((plan) => (
                     <div
@@ -191,28 +275,28 @@ const UserDashboard = () => {
                       className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow duration-300"
                     >
                       <div className="flex justify-between items-start mb-3">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                          {plan.name}
-                        </h3>
-                        {plan.popular && (
-                          <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
-                            Popular
-                          </span>
-                        )}
-                        {plan.bestValue && (
-                          <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded-full">
-                            Best Value
-                          </span>
-                        )}
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                        {plan.name}
+                      </h3>
+                      {plan.badges?.popular && (
+                        <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
+                          Popular
+                        </span>
+                      )}
+                      {plan.badges?.bestValue && (
+                        <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded-full">
+                          Best Value
+                        </span>
+                      )}
                       </div>
                       
                       <p className="text-2xl font-bold text-primary mb-2">
-                        {plan.price}
+                        ${plan.price}
                         <span className="text-sm font-normal text-gray-500 dark:text-gray-400">/month</span>
                       </p>
                       
                       <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                        {plan.quota} storage
+                        {plan.quota}GB storage
                       </p>
                       
                       <button
@@ -242,12 +326,12 @@ const UserDashboard = () => {
                     className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
-                        {offer.code}
-                      </h3>
-                      <span className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs px-2 py-1 rounded-full">
-                        {offer.discount}% OFF
-                      </span>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {offer.code}
+                    </h3>
+                    <span className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs px-2 py-1 rounded-full">
+                      {offer.discountValue}{offer.discountType === 'percentage' ? '%' : '$'} OFF
+                    </span>
                     </div>
                     
                     <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
@@ -255,7 +339,7 @@ const UserDashboard = () => {
                     </p>
                     
                     <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                      Valid till {offer.validTill}
+                      Valid till {new Date(offer.validTill).toLocaleDateString()}
                     </p>
                     
                     <button

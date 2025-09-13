@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar/Navbar";
-import { plans } from "../utils/dummyData";
+import { api } from "../lib/api";
 
 const PlansPage = () => {
   const navigate = useNavigate();
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    loadPlans();
+  }, []);
+
+  const loadPlans = async () => {
+    try {
+      setLoading(true);
+      const data = await api.getPlans();
+      setPlans(data.plans);
+    } catch (err) {
+      console.error('Error loading plans:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white duration-300">
@@ -21,8 +41,26 @@ const PlansPage = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan) => (
+        {loading ? (
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Loading plans...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="text-center">
+            <p className="text-red-600 dark:text-red-400 mb-4">Error loading plans: {error}</p>
+            <button 
+              onClick={loadPlans}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+            >
+              Retry
+            </button>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {plans.map((plan) => (
             <div
               key={plan.id}
               className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border-2 transition-all duration-300 hover:shadow-xl ${
@@ -44,11 +82,11 @@ const PlansPage = () => {
                   {plan.name}
                 </h3>
                 <div className="text-4xl font-bold text-primary mb-2">
-                  {plan.price}
+                  ${plan.price}
                   <span className="text-lg font-normal text-gray-500 dark:text-gray-400">/month</span>
                 </div>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {plan.quota} storage included
+                  {plan.quota}GB storage included
                 </p>
               </div>
 
@@ -58,7 +96,7 @@ const PlansPage = () => {
                     <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    {feature}
+                    {feature.name}
                   </li>
                 ))}
               </ul>
@@ -66,16 +104,17 @@ const PlansPage = () => {
               <button
                 onClick={() => navigate("/user-dashboard")}
                 className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors duration-300 ${
-                  plan.popular
+                  plan.badges?.popular
                     ? 'bg-primary text-white hover:bg-primary/90'
                     : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600'
                 }`}
               >
-                {plan.popular ? 'Get Started' : 'Choose Plan'}
+                {plan.badges?.popular ? 'Get Started' : 'Choose Plan'}
               </button>
             </div>
           ))}
-        </div>
+          </div>
+        )}
 
         <div className="text-center mt-12">
           <button

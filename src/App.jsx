@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./Pages/LoginPage";
 import SignupPage from "./Pages/SignupPage";
 import Dashboard from "./Pages/Dashboard";
@@ -12,19 +13,21 @@ import AdminDashboard from "./Pages/AdminDashboard";
 
 const App = () => {
   return (
-		<Router>
-			<Routes>
-				<Route path="/" element={<HomePage />} />
-				<Route path="/login" element={<LoginPage />} />
-				<Route path="/signup" element={<SignupPage />} />
-				<Route path="/dashboard" element={<Dashboard />} />
-				<Route path="/user-dashboard" element={<UserDashboard />} />
-				<Route path="/plans" element={<PlansPage />} />
-				<Route path="/AdminPlans" element={<AdminPlans />} />
-        		<Route path="/AdminDiscounts" element={<AdminDiscounts />} />
-        		<Route path="/AdminDashboard" element={<AdminDashboard />} />
-			</Routes>
-		</Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/user-dashboard" element={<UserDashboard />} />
+          <Route path="/plans" element={<PlansPage />} />
+          <Route path="/AdminPlans" element={<AdminPlans />} />
+          <Route path="/AdminDiscounts" element={<AdminDiscounts />} />
+          <Route path="/AdminDashboard" element={<AdminDashboard />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 

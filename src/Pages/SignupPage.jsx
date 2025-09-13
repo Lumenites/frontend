@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { BiSolidSun, BiSolidMoon } from "react-icons/bi";
 
 const SignupPage = () => {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -46,7 +46,7 @@ const SignupPage = () => {
     setLoading(true);
 
     try {
-      await signup(username, email, password);
+      await signup(name, email, password);
       navigate("/");
     } catch (err) {
       setError(err.message || "Failed to create account");
@@ -100,17 +100,17 @@ const SignupPage = () => {
           {/* Signup Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Username
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Full Name
               </label>
               <input
-                id="username"
+                id="name"
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-white/50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500"
-                placeholder="Choose a username"
+                placeholder="Enter your full name"
               />
             </div>
 
