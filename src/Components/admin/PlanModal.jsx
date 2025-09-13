@@ -1,20 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "../UI/Modal";
 import Button from "../UI/Button";
 
 export default function PlanModal({ isOpen, onClose, onSave, initialData }) {
-	const [form, setForm] = useState(
-		initialData || {
-			PlanName: "",
-			Type: "Fibernet",
-			MonthlyFee: "",
-			DataQuota: "",
-			Speed: "",
-			Status: "Active",
-			CreatedBy: "U001",
-		}
-	);
-	  
+	const [form, setForm] = useState({
+		code: "",
+		name: "",
+		price: "",
+		quota: "",
+		description: "",
+	});
+
+	useEffect(() => {
+		if (initialData) setForm(initialData);
+	}, [initialData]);
 
 	const handleChange = (e) => {
 		setForm({ ...form, [e.target.name]: e.target.value });
@@ -30,54 +29,43 @@ export default function PlanModal({ isOpen, onClose, onSave, initialData }) {
 			<h2 className="text-lg font-semibold mb-4">
 				{initialData ? "Edit Plan" : "Add New Plan"}
 			</h2>
-			<div className="space-y-3">
+			<div className="space-y-3 text-black dark:text-white">
 				<input
-					name="PlanName"
-					value={form.PlanName}
+					name="code"
+					value={form.code}
+					onChange={handleChange}
+					placeholder="Plan Code (unique)"
+					className="w-full border rounded-lg px-3 py-2 text-black dark:text-white"
+				/>
+				<input
+					name="name"
+					value={form.name}
 					onChange={handleChange}
 					placeholder="Plan Name"
-					className="w-full border rounded-lg px-3 py-2"
+					className="w-full border rounded-lg px-3 py-2 text-black dark:text-white"
 				/>
 				<input
-					name="MonthlyFee"
-					value={form.MonthlyFee}
+					name="price"
+					value={form.price}
 					onChange={handleChange}
-					placeholder="Monthly Fee"
+					placeholder="Price"
 					type="number"
-					className="w-full border rounded-lg px-3 py-2"
+					className="w-full border rounded-lg px-3 py-2 text-black dark:text-white"
 				/>
 				<input
-					name="DataQuota"
-					type="number"
-					placeholder="Data Quota (GB)"
-					value={form.DataQuota}
-					className="w-full border rounded-lg px-3 py-2"
-				/>
-				<input
-					name="Speed"
-					type="number"
-					placeholder="Speed (Mbps)"
-					value={form.Speed}
-					className="w-full border rounded-lg px-3 py-2"
-				/>
-				<select
-					name="Type"
-					value={form.Type}
+					name="quota"
+					value={form.quota}
 					onChange={handleChange}
-					className="w-full border rounded-lg px-3 py-2"
-				>
-					<option>Fibernet</option>
-					<option>Copper</option>
-				</select>
-				<select
-					name="status"
-					value={form.status}
+					placeholder="Data Quota (e.g. 100GB / Unlimited)"
+					className="w-full border rounded-lg px-3 py-2 text-black dark:text-white"
+				/>
+				<textarea
+					name="description"
+					value={form.description}
 					onChange={handleChange}
-					className="w-full border rounded-lg px-3 py-2"
-				>
-					<option value="Active">Active</option>
-					<option value="Inactive">Inactive</option>
-				</select>
+					placeholder="Description"
+					className="w-full border rounded-lg px-3 py-2 text-black dark:text-white"
+				/>
 			</div>
 			<div className="flex justify-end gap-2 mt-4">
 				<Button onClick={handleSubmit}>

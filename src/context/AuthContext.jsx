@@ -1,72 +1,90 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { api } from "../lib/api";
+import { createContext, useContext, useState, useEffect } from "react";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
+const API_URL = "http://localhost:4000/api/auth";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("auth_token");
-    if (!storedToken) {
+    if (!token) {
       setLoading(false);
       return;
     }
-    setToken(storedToken);
-    api.me(storedToken)
-      .then((data) => {
-        setUser(data.user || data);
+
+    fetch(`${API_URL}/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) setUser(data.user);
       })
       .catch(() => {
-        localStorage.removeItem("auth_token");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setToken(null);
+        setUser(null);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
+
+  const signup = async (username, email, password) => {
+    const res = await fetch(`${API_URL}/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password }),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Signup failed");
+    }
+
+    const data = await res.json();
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+    setToken(data.token);
+    setUser(data.user);
+    return data;
+  };
 
   const login = async (email, password) => {
-    const res = await api.login({ email, password });
-    const authToken = res.token || res.accessToken;
-    if (authToken) {
-      localStorage.setItem("auth_token", authToken);
-      setToken(authToken);
+    const res = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Login failed");
     }
-    setUser(res.user || res);
-    return res;
+
+    const data = await res.json();
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+    setToken(data.token);
+    setUser(data.user);
+    return data;
   };
 
-  const signup = async (name, email, password) => {
-    const res = await api.signup({ name, email, password });
-    const authToken = res.token || res.accessToken;
-    if (authToken) {
-      localStorage.setItem("auth_token", authToken);
-      setToken(authToken);
-    }
-    setUser(res.user || res);
-    return res;
-  };
-
-  const signout = async () => {
-    const authToken = localStorage.getItem("auth_token");
-    try { if (authToken) await api.logout(authToken); } catch {}
-    localStorage.removeItem("auth_token");
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
   };
 
-  const value = useMemo(() => ({
+  const value = {
     user,
     token,
     loading,
-    error,
-    setError,
-    login,
     signup,
-    logout: signout,
-  }), [user, token, loading, error]);
+    login,
+    logout
+  };
 
   return (
     <AuthContext.Provider value={value}>
