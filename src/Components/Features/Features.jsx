@@ -1,7 +1,5 @@
 import React from "react";
-import { FaChartLine, FaCreditCard, FaCog } from "react-icons/fa";
-import { GiNotebook } from "react-icons/gi";
-import { SlNote } from "react-icons/sl";
+import { FaChartLine, FaCreditCard, FaCog, FaUsers, FaShieldAlt, FaRocket } from "react-icons/fa";
 
 const FeaturesData = [
   {
@@ -23,13 +21,40 @@ const FeaturesData = [
     aosDelay: "500",
   },
   {
+    name: "Customer Lifecycle Management",
+    icon: (
+      <FaUsers className="text-5xl text-primary group-hover:text-black duration-500" />
+    ),
+    link: "#",
+    description: "Track customer journeys, predict churn, and implement retention strategies with AI-powered customer insights.",
+    aosDelay: "700",
+  },
+  {
+    name: "Revenue Optimization",
+    icon: (
+      <FaRocket className="text-5xl text-primary group-hover:text-black duration-300" />
+    ),
+    link: "#",
+    description: "Maximize recurring revenue with dynamic pricing, upselling automation, and conversion rate optimization tools.",
+    aosDelay: "900",
+  },
+  {
+    name: "Security & Compliance",
+    icon: (
+      <FaShieldAlt className="text-5xl text-primary group-hover:text-black duration-500" />
+    ),
+    link: "#",
+    description: "Enterprise-grade security with PCI DSS compliance, data encryption, and advanced fraud protection.",
+    aosDelay: "1100",
+  },
+  {
     name: "Advanced Automation",
     icon: (
       <FaCog className="text-5xl text-primary group-hover:text-black duration-500" />
     ),
     link: "#",
     description: "AI-powered subscription management with automated workflows, pricing optimization, and customer lifecycle management.",
-    aosDelay: "700",
+    aosDelay: "1300",
   },
 ];
 
@@ -42,11 +67,18 @@ const Features = () => {
             data-aos="fade-up"
             className="text-3xl font-semibold text-center sm:text-4xl mb-12"
           >
-            Why Choose Our Platform
+            Everything You Need to Scale
           </h1>
+          <p
+            data-aos="fade-up"
+            data-aos-delay="200"
+            className="text-center text-neutral-600 dark:text-neutral-300 mb-16 max-w-3xl mx-auto"
+          >
+            From startups to enterprises, our comprehensive subscription management platform provides all the tools you need to build, grow, and optimize your recurring revenue business.
+          </p>
 
           {/* card section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             {FeaturesData.map((data, index) => (
               <div
                 key={index}

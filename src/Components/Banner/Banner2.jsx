@@ -1,8 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 const BANNER_3D_2 = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop";
 const BANNER_3D_2_FALLBACK = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop";
 
 const Banner2 = () => {
+  const navigate = useNavigate();
   return (
     <div className="py-12 sm:py-0 relative">
       <div className="container min-h-[620px] flex items-center">
@@ -15,21 +17,22 @@ const Banner2 = () => {
                 data-aos-delay="300"
                 className="text-4xl font-semibold"
               >
-                Automated Billing
+                Increase Revenue by
                 <span className="bg-clip-text text-transparent brand-gradient ml-2">
-                  Smart, Secure, Scalable
+                  35% with Smart Pricing
                 </span>
               </h1>
               <p data-aos="fade-up" data-aos-delay="500" className="text-neutral-600 dark:text-neutral-300">
-                Seamless payment processing, automated invoicing, and intelligent dunning management—so you can focus on growing your business.
+                Dynamic pricing optimization, automated upselling, and intelligent discount management help you maximize revenue while keeping customers happy and engaged.
               </p>
               <div className="flex gap-6">
                 <button
                   data-aos="fade-up"
                   data-aos-delay="700"
+                  onClick={() => navigate("/plans")}
                   className="primary-btn"
                 >
-                  Setup Billing
+                  Optimize Pricing
                 </button>
               </div>
             </div>

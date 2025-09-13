@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 const BANNER_3D_1 = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1600&auto=format&fit=crop";
 
 const Banner = () => {
+  const navigate = useNavigate();
   return (
     <div className="py-12 sm:py-0 relative">
       <div className="container min-h-[620px] flex items-center">
@@ -18,21 +20,22 @@ const Banner = () => {
                 data-aos-delay="300"
                 className="text-4xl font-semibold"
               >
-                Analytics That Drive
+                Reduce Churn by
                 <span className="bg-clip-text text-transparent brand-gradient ml-2">
-                  Revenue Growth
+                  60% with AI Insights
                 </span>
               </h1>
               <p data-aos="fade-up" data-aos-delay="500" className="text-neutral-600 dark:text-neutral-300">
-                Real-time 3D analytics, automated billing insights, and predictive revenue modeling—so you can make data-driven decisions that scale your business.
+                Our AI-powered platform predicts customer behavior, identifies at-risk subscribers, and automatically triggers retention campaigns to keep your customers engaged and reduce churn.
               </p>
               <div className="flex gap-6">
                 <button
                   data-aos="fade-up"
                   data-aos-delay="700"
+                  onClick={() => navigate("/user-dashboard")}
                   className="primary-btn"
                 >
-                  View Analytics
+                  See AI Insights
                 </button>
               </div>
             </div>
