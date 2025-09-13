@@ -367,6 +367,8 @@ router.post('/switch-plan', async (req, res) => {
         'subscription.planId': planId,
         'subscription.status': 'active',
         'subscription.usage.storage.quota': plan.limits.storage,
+        // Adjust used storage if it exceeds the new quota
+        'subscription.usage.storage.used': Math.min(user.subscription.usage.storage.used, plan.limits.storage),
         'subscription.renewalDate': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
       },
       { new: true }
@@ -427,6 +429,55 @@ router.post('/cancel-subscription', async (req, res) => {
     });
   } catch (error) {
     console.error('Cancel subscription error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   POST /api/dashboard/reactivate-subscription
+// @desc    Reactivate user's subscription
+// @access  Public (using demo user)
+router.post('/reactivate-subscription', async (req, res) => {
+  try {
+    console.log('Reactivate subscription endpoint called');
+    
+    // Find the demo user
+    const user = await User.findOne({ email: 'demo@example.com' });
+    
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log('User found, updating subscription status...');
+
+    // Update user subscription status
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      {
+        'subscription.status': 'active'
+      },
+      { new: true }
+    );
+
+    console.log('Subscription updated, creating notification...');
+
+    // Create notification
+    await Notification.create({
+      userId: user._id,
+      type: 'system',
+      title: 'Subscription Reactivated',
+      message: 'Your subscription has been reactivated successfully!',
+      priority: 'medium'
+    });
+
+    console.log('Reactivate subscription successful');
+
+    res.json({
+      message: 'Subscription reactivated successfully',
+      subscription: updatedUser.subscription
+    });
+  } catch (error) {
+    console.error('Reactivate subscription error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

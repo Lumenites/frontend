@@ -35,6 +35,10 @@ export const api = {
   getDashboardData: () => request("/dashboard/overview", { method: "GET" }),
   switchPlan: (payload) => request("/dashboard/switch-plan", { method: "POST", body: payload }),
   cancelSubscription: () => request("/dashboard/cancel-subscription", { method: "POST" }),
+  reactivateSubscription: () => {
+    console.log('Making reactivate subscription request to:', `${API_BASE_URL}/dashboard/reactivate-subscription`);
+    return request("/dashboard/reactivate-subscription", { method: "POST" });
+  },
   applyOffer: (payload) => request("/dashboard/apply-offer", { method: "POST", body: payload }),
   dismissNotification: (notificationId) => request(`/dashboard/dismiss-notification/${notificationId}`, { method: "PUT" }),
   

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar/Navbar";
 import { api } from "../lib/api";
@@ -100,6 +100,20 @@ const UserDashboard = () => {
 
   const handleRenew = () => {
     showToastNotification("Plan renewed successfully! New billing date: January 15, 2025");
+  };
+
+  const handleReactivate = async () => {
+    try {
+      console.log('Calling reactivate subscription API...');
+      const result = await api.reactivateSubscription();
+      console.log('Reactivate result:', result);
+      showToastNotification("Subscription reactivated successfully! Your plan is now active again.");
+      loadDashboardData(); // Refresh data
+    } catch (err) {
+      console.error('Reactivate error:', err);
+      console.error('Error details:', err.message, err.status);
+      showToastNotification(`Error: ${err.message}`);
+    }
   };
 
   const handleSwitchPlan = async (planId) => {
@@ -251,14 +265,22 @@ const UserDashboard = () => {
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                       <div
                         className={`h-3 rounded-full transition-all duration-300 ${
+                          currentSubscription.usagePercentage >= 100 ? 'bg-red-600' :
                           currentSubscription.usagePercentage > 90 ? 'bg-red-500' : 
                           currentSubscription.usagePercentage > 70 ? 'bg-yellow-500' : 'bg-green-500'
                         }`}
-                        style={{ width: `${currentSubscription.usagePercentage}%` }}
+                        style={{ 
+                          width: `${Math.min(Math.max(currentSubscription.usagePercentage, 0), 100)}%` 
+                        }}
                       ></div>
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {currentSubscription.usagePercentage.toFixed(1)}% used
+                    <p className={`text-xs mt-1 ${
+                      currentSubscription.usagePercentage >= 100 ? 'text-red-600 dark:text-red-400 font-semibold' :
+                      currentSubscription.usagePercentage > 90 ? 'text-red-500 dark:text-red-400' :
+                      'text-gray-500 dark:text-gray-400'
+                    }`}>
+                      {Math.min(Math.max(currentSubscription.usagePercentage, 0), 100).toFixed(1)}% used
+                      {currentSubscription.usagePercentage >= 100 && ' - Storage Full!'}
                     </p>
                   </div>
                   
@@ -269,30 +291,51 @@ const UserDashboard = () => {
               </div>
 
               <div className="flex flex-wrap gap-3 mt-6">
-                <button
-                  onClick={handleUpgrade}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-300"
-                >
-                  Upgrade
-                </button>
-                <button
-                  onClick={handleDowngrade}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300"
-                >
-                  Downgrade
-                </button>
-                <button
-                  onClick={handleRenew}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
-                >
-                  Renew
-                </button>
-                <button
-                  onClick={handleCancel}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300"
-                >
-                  Cancel
-                </button>
+                {currentSubscription.status === 'cancelled' ? (
+                  <>
+                    <div className="w-full p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                      <p className="text-red-800 dark:text-red-200 font-semibold mb-2">
+                        Subscription Cancelled
+                      </p>
+                      <p className="text-red-700 dark:text-red-300 text-sm">
+                        Your subscription has been cancelled. You will retain access until the end of your current billing period.
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleReactivate}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
+                    >
+                      Reactivate Subscription
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleUpgrade}
+                      className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-300"
+                    >
+                      Upgrade
+                    </button>
+                    <button
+                      onClick={handleDowngrade}
+                      className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300"
+                    >
+                      Downgrade
+                    </button>
+                    <button
+                      onClick={handleRenew}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
+                    >
+                      Renew
+                    </button>
+                    <button
+                      onClick={handleCancel}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
