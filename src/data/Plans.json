@@ -1,0 +1,103 @@
+[
+    {
+      "PlanID": "P001",
+      "PlanName": "Copper There",
+      "Type": "Fibernet",
+      "MonthlyFee": 1345,
+      "DataQuota": 50,
+      "Speed": 50,
+      "Status": "Inactive",
+      "CreatedBy": "U019"
+    },
+    {
+      "PlanID": "P002",
+      "PlanName": "Fibernet Only",
+      "Type": "Fibernet",
+      "MonthlyFee": 313,
+      "DataQuota": 50,
+      "Speed": 20,
+      "Status": "Inactive",
+      "CreatedBy": "U002"
+    },
+    {
+      "PlanID": "P003",
+      "PlanName": "Fibernet Amount",
+      "Type": "Copper",
+      "MonthlyFee": 818,
+      "DataQuota": 500,
+      "Speed": 50,
+      "Status": "Active",
+      "CreatedBy": "U010"
+    },
+    {
+      "PlanID": "P004",
+      "PlanName": "Copper Give",
+      "Type": "Fibernet",
+      "MonthlyFee": 568,
+      "DataQuota": 100,
+      "Speed": 200,
+      "Status": "Inactive",
+      "CreatedBy": "U015"
+    },
+    {
+      "PlanID": "P005",
+      "PlanName": "Fibernet Republican",
+      "Type": "Copper",
+      "MonthlyFee": 505,
+      "DataQuota": 500,
+      "Speed": 20,
+      "Status": "Inactive",
+      "CreatedBy": "U009"
+    },
+    {
+      "PlanID": "P006",
+      "PlanName": "Fibernet As",
+      "Type": "Fibernet",
+      "MonthlyFee": 729,
+      "DataQuota": 200,
+      "Speed": 50,
+      "Status": "Inactive",
+      "CreatedBy": "U015"
+    },
+    {
+      "PlanID": "P007",
+      "PlanName": "Copper Them",
+      "Type": "Fibernet",
+      "MonthlyFee": 921,
+      "DataQuota": 200,
+      "Speed": 200,
+      "Status": "Inactive",
+      "CreatedBy": "U004"
+    },
+    {
+      "PlanID": "P008",
+      "PlanName": "Fibernet Product",
+      "Type": "Copper",
+      "MonthlyFee": 1531,
+      "DataQuota": 50,
+      "Speed": 100,
+      "Status": "Inactive",
+      "CreatedBy": "U010"
+    },
+    {
+      "PlanID": "P009",
+      "PlanName": "Copper Ahead",
+      "Type": "Fibernet",
+      "MonthlyFee": 635,
+      "DataQuota": 50,
+      "Speed": 150,
+      "Status": "Active",
+      "CreatedBy": "U001"
+    },
+    {
+      "PlanID": "P010",
+      "PlanName": "Copper Use",
+      "Type": "Fibernet",
+      "MonthlyFee": 1968,
+      "DataQuota": 200,
+      "Speed": 150,
+      "Status": "Inactive",
+      "CreatedBy": "U003"
+    }
+  ]
+  

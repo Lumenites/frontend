@@ -1,0 +1,53 @@
+[
+    {
+      "DiscountID": "D001",
+      "Name": "Digitized impactful Local Area Network",
+      "Type": "Fixed",
+      "Value": "₹462",
+      "Condition": "For Students",
+      "StartDate": "2024-11-01",
+      "EndDate": "2025-08-21",
+      "CreatedBy": "U004"
+    },
+    {
+      "DiscountID": "D002",
+      "Name": "Upgradable demand-driven budgetary management",
+      "Type": "Fixed",
+      "Value": "₹364",
+      "Condition": "Upgrade Only",
+      "StartDate": "2024-10-08",
+      "EndDate": "2025-03-19",
+      "CreatedBy": "U003"
+    },
+    {
+      "DiscountID": "D003",
+      "Name": "Persistent impactful help-desk",
+      "Type": "Percentage",
+      "Value": "10%",
+      "Condition": "For Students",
+      "StartDate": "2024-10-30",
+      "EndDate": "2025-08-17",
+      "CreatedBy": "U012"
+    },
+    {
+      "DiscountID": "D004",
+      "Name": "Integrated object-oriented extranet",
+      "Type": "Fixed",
+      "Value": "₹456",
+      "Condition": "All Plans",
+      "StartDate": "2024-09-29",
+      "EndDate": "2025-08-04",
+      "CreatedBy": "U009"
+    },
+    {
+      "DiscountID": "D005",
+      "Name": "Extended client-driven policy",
+      "Type": "Percentage",
+      "Value": "₹76",
+      "Condition": "Upgrade Only",
+      "StartDate": "2024-12-03",
+      "EndDate": "2025-08-01",
+      "CreatedBy": "U014"
+    }
+  ]
+  
