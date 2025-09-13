@@ -1,6 +1,6 @@
 import React from "react";
 import { HiMenuAlt1, HiMenuAlt3 } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DarkMode from "./DarkMode";
 import { useAuth } from "../../context/AuthContext";
 
@@ -37,6 +37,7 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [active, setActive] = React.useState('home');
+  const navigate = useNavigate();
   const toggleMenu = () => setShowMenu(!showMenu);
   React.useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 8);
@@ -70,7 +71,11 @@ const Navbar = () => {
     e.preventDefault();
     const id = href.replace('#','');
     const el = document.getElementById(id);
-    if (!el) return;
+    if (!el) {
+      // If element not found, navigate to homepage
+      navigate('/');
+      return;
+    }
     const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
     window.scrollTo({ top: y, behavior: 'smooth' });
   };
