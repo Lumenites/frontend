@@ -2,18 +2,33 @@ import { useState, useEffect } from "react";
 import DiscountCard from "../Components/admin/DiscountCard";
 import DiscountModal from "../Components/admin/DiscountModal";
 import Button from "../Components/UI/Button";
-import discountsData from "../data/Discount.json";
 
 export default function AdminDiscounts() {
 	const [discounts, setDiscounts] = useState([]);
 	const [isModalOpen, setModalOpen] = useState(false);
 
-	useEffect(() => {
-		setDiscounts(discountsData);
-	}, []);
+	const token = localStorage.getItem("token");
 
-	const handleSave = (discount) => {
-		setDiscounts((prev) => [...prev, { ...discount, id: Date.now() }]);
+	useEffect(() => {
+		fetch("http://localhost:4000/api/discounts", {
+			headers: { Authorization: `Bearer ${token}` },
+		})
+			.then((res) => res.json())
+			.then((data) => setDiscounts(data))
+			.catch((err) => console.error(err));
+	}, [token]);
+
+	const handleSave = async (discount) => {
+		const res = await fetch("http://localhost:4000/api/discounts", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(discount),
+		});
+		const newDiscount = await res.json();
+		setDiscounts((prev) => [...prev, newDiscount]);
 	};
 
 	return (
@@ -25,7 +40,7 @@ export default function AdminDiscounts() {
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				{discounts.map((d) => (
-					<DiscountCard key={d.id} discount={d} />
+					<DiscountCard key={d._id} discount={d} />
 				))}
 			</div>
 

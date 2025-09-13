@@ -4,21 +4,25 @@ import Button from "../UI/Button";
 
 export default function DiscountModal({ isOpen, onClose, onSave }) {
 	const [form, setForm] = useState({
-		Name: "",
-		Type: "Fixed",
-		Value: "",
-		Condition: "",
-		StartDate: "",
-		EndDate: "",
-		CreatedBy: "U001",
+		code: "",
+		description: "",
+		percentage: "",
+		validFrom: "",
+		validTo: "",
+		conditions: "",
+		active: true,
 	});
 
 	const handleChange = (e) => {
-		setForm({ ...form, [e.target.name]: e.target.value });
+		const { name, value, type, checked } = e.target;
+		setForm({
+			...form,
+			[name]: type === "checkbox" ? checked : value,
+		});
 	};
 
 	const handleSubmit = () => {
-		onSave({ ...form, DiscountID: `D${Date.now()}` }); // generate unique ID
+		onSave(form);
 		onClose();
 	};
 
@@ -26,39 +30,36 @@ export default function DiscountModal({ isOpen, onClose, onSave }) {
 		<Modal isOpen={isOpen} onClose={onClose}>
 			<h2 className="text-lg font-semibold mb-4">Add Discount</h2>
 			<div className="space-y-3">
-				{/* Name */}
 				<input
-					name="Name"
-					value={form.Name}
+					name="code"
+					value={form.code}
 					onChange={handleChange}
-					placeholder="Discount Name"
+					placeholder="Discount Code"
 					className="w-full border rounded-lg px-3 py-2"
 				/>
 
-				{/* Type */}
-				<select
-					name="Type"
-					value={form.Type}
-					onChange={handleChange}
-					className="w-full border rounded-lg px-3 py-2"
-				>
-					<option value="Fixed">Fixed</option>
-					<option value="Percentage">Percentage</option>
-				</select>
-
-				{/* Value */}
 				<input
-					name="Value"
-					value={form.Value}
+					name="description"
+					value={form.description}
 					onChange={handleChange}
-					placeholder="Value (₹ or %)"
+					placeholder="Description"
 					className="w-full border rounded-lg px-3 py-2"
 				/>
 
-				{/* Condition */}
+				<input
+					type="number"
+					name="percentage"
+					value={form.percentage}
+					onChange={handleChange}
+					placeholder="Percentage (1-100)"
+					min="1"
+					max="100"
+					className="w-full border rounded-lg px-3 py-2"
+				/>
+
 				<select
-					name="Condition"
-					value={form.Condition}
+					name="conditions"
+					value={form.conditions}
 					onChange={handleChange}
 					className="w-full border rounded-lg px-3 py-2"
 				>
@@ -69,23 +70,32 @@ export default function DiscountModal({ isOpen, onClose, onSave }) {
 					<option value="Upgrade Only">Upgrade Only</option>
 				</select>
 
-				{/* Dates */}
 				<div className="flex gap-2">
 					<input
 						type="date"
-						name="StartDate"
-						value={form.StartDate}
+						name="validFrom"
+						value={form.validFrom}
 						onChange={handleChange}
 						className="w-1/2 border rounded-lg px-3 py-2"
 					/>
 					<input
 						type="date"
-						name="EndDate"
-						value={form.EndDate}
+						name="validTo"
+						value={form.validTo}
 						onChange={handleChange}
 						className="w-1/2 border rounded-lg px-3 py-2"
 					/>
 				</div>
+
+				<label className="flex items-center gap-2">
+					<input
+						type="checkbox"
+						name="active"
+						checked={form.active}
+						onChange={handleChange}
+					/>
+					Active
+				</label>
 			</div>
 
 			<div className="flex justify-end gap-2 mt-4">

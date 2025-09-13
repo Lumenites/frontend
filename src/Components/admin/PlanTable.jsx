@@ -14,37 +14,25 @@ export default function PlanTable({ plans, onEdit, onDelete, onAdd }) {
 			<table className="w-full text-left">
 				<thead>
 					<tr className="text-gray-600 dark:text-gray-400 text-sm border-b border-gray-200 dark:border-gray-700">
-						<th className="py-2">Name</th>
+						<th className="py-2">Code</th>
+						<th>Name</th>
 						<th>Price</th>
-						<th>Type</th>
 						<th>Quota</th>
-						<th>Speed</th>
-						<th>Status</th>
+						<th>Description</th>
 						<th className="text-right">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					{plans.map((plan) => (
 						<tr
-							key={plan.PlanID}
+							key={plan._id}
 							className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
 						>
-							<td className="py-3">{plan.PlanName}</td>
-							<td>₹{plan.MonthlyFee}</td>
-							<td>{plan.Type}</td>
-							<td>{plan.DataQuota} GB</td>
-							<td>{plan.Speed} Mbps</td>
-							<td>
-								<span
-									className={`px-2 py-1 rounded-lg text-xs ${
-										plan.Status === "Active"
-											? "bg-green-100 text-green-700 dark:bg-green-700 dark:text-white"
-											: "bg-red-100 text-red-700 dark:bg-red-700 dark:text-white"
-									}`}
-								>
-									{plan.Status}
-								</span>
-							</td>
+							<td className="py-3">{plan.code}</td>
+							<td>{plan.name}</td>
+							<td>₹{plan.price}</td>
+							<td>{plan.quota}</td>
+							<td>{plan.description}</td>
 							<td className="flex justify-end gap-2">
 								<button
 									onClick={() => onEdit(plan)}
@@ -53,7 +41,7 @@ export default function PlanTable({ plans, onEdit, onDelete, onAdd }) {
 									<Pencil size={16} />
 								</button>
 								<button
-									onClick={() => onDelete(plan.id)}
+									onClick={() => onDelete(plan._id)}
 									className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-red-600 dark:text-red-400"
 								>
 									<Trash2 size={16} />
