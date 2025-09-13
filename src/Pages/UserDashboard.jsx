@@ -39,12 +39,48 @@ const UserDashboard = () => {
     }, 3000);
   };
 
-  const handleUpgrade = () => {
-    navigate("/plans");
+  const handleUpgrade = async () => {
+    try {
+      // Find the next higher plan
+      const currentPlan = dashboardData?.currentSubscription;
+      const allPlans = dashboardData?.allPlans || [];
+      
+      // Sort plans by price to find the next higher plan
+      const sortedPlans = allPlans.sort((a, b) => a.price - b.price);
+      const nextPlan = sortedPlans.find(plan => plan.price > currentPlan.price);
+      
+      if (nextPlan) {
+        await handleSwitchPlan(nextPlan.id);
+        showToastNotification(`Upgraded to ${nextPlan.name} successfully!`);
+      } else {
+        // If no higher plan found, show all plans
+        navigate("/plans");
+      }
+    } catch (err) {
+      showToastNotification(`Error: ${err.message}`);
+    }
   };
 
-  const handleDowngrade = () => {
-    navigate("/plans");
+  const handleDowngrade = async () => {
+    try {
+      // Find the next lower plan
+      const currentPlan = dashboardData?.currentSubscription;
+      const allPlans = dashboardData?.allPlans || [];
+      
+      // Sort plans by price to find the next lower plan
+      const sortedPlans = allPlans.sort((a, b) => a.price - b.price);
+      const nextPlan = sortedPlans.reverse().find(plan => plan.price < currentPlan.price);
+      
+      if (nextPlan) {
+        await handleSwitchPlan(nextPlan.id);
+        showToastNotification(`Downgraded to ${nextPlan.name} successfully!`);
+      } else {
+        // If no lower plan found, show all plans
+        navigate("/plans");
+      }
+    } catch (err) {
+      showToastNotification(`Error: ${err.message}`);
+    }
   };
 
   const handleCancel = () => {

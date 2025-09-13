@@ -175,14 +175,25 @@ router.get('/overview', async (req, res) => {
       ]
     }).sort({ priority: -1, createdAt: -1 }).limit(5);
 
-    // Get recommended plans (excluding current plan)
-    const recommendedPlans = await Plan.find({
+    // Get all available plans (excluding current plan) for upgrade/downgrade
+    const allPlans = await Plan.find({
       isActive: true,
       _id: { $ne: user.subscription.planId }
     })
-    .sort({ 'badges.popular': -1, 'badges.bestValue': -1, sortOrder: 1 })
-    .limit(3)
+    .sort({ price: 1, sortOrder: 1 })
     .select('name price features limits badges');
+
+    // Get recommended plans (top 3 for display)
+    const recommendedPlans = allPlans
+      .sort((a, b) => {
+        // Sort by badges first, then by price
+        if (a.badges.popular && !b.badges.popular) return -1;
+        if (!a.badges.popular && b.badges.popular) return 1;
+        if (a.badges.bestValue && !b.badges.bestValue) return -1;
+        if (!a.badges.bestValue && b.badges.bestValue) return 1;
+        return a.price - b.price;
+      })
+      .slice(0, 3);
 
     console.log('Sending real database data to frontend...');
     
@@ -198,6 +209,14 @@ router.get('/overview', async (req, res) => {
         status: user.subscription.status
       },
       recommendedPlans: recommendedPlans.map(plan => ({
+        id: plan._id,
+        name: plan.name,
+        price: plan.price,
+        quota: plan.limits.storage,
+        features: plan.features,
+        badges: plan.badges
+      })),
+      allPlans: allPlans.map(plan => ({
         id: plan._id,
         name: plan.name,
         price: plan.price,
@@ -239,32 +258,58 @@ router.get('/overview', async (req, res) => {
         renewalDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         status: 'active'
       },
-      recommendedPlans: [
-        {
-          id: '1',
-          name: 'Basic Plan',
-          price: 10,
-          quota: 100,
-          features: [
-            { name: '100GB Storage', included: true },
-            { name: 'Basic Analytics', included: true },
-            { name: 'Email Support', included: true }
-          ],
-          badges: { popular: false, bestValue: false }
-        },
-        {
-          id: '2',
-          name: 'Standard Plan',
-          price: 20,
-          quota: 200,
-          features: [
-            { name: '200GB Storage', included: true },
-            { name: 'Advanced Analytics', included: true },
-            { name: 'Priority Support', included: true }
-          ],
-          badges: { popular: true, bestValue: false }
-        }
-      ],
+        recommendedPlans: [
+          {
+            id: '1',
+            name: 'Basic Plan',
+            price: 10,
+            quota: 100,
+            features: [
+              { name: '100GB Storage', included: true },
+              { name: 'Basic Analytics', included: true },
+              { name: 'Email Support', included: true }
+            ],
+            badges: { popular: false, bestValue: false }
+          },
+          {
+            id: '2',
+            name: 'Standard Plan',
+            price: 20,
+            quota: 200,
+            features: [
+              { name: '200GB Storage', included: true },
+              { name: 'Advanced Analytics', included: true },
+              { name: 'Priority Support', included: true }
+            ],
+            badges: { popular: true, bestValue: false }
+          }
+        ],
+        allPlans: [
+          {
+            id: '1',
+            name: 'Basic Plan',
+            price: 10,
+            quota: 100,
+            features: [
+              { name: '100GB Storage', included: true },
+              { name: 'Basic Analytics', included: true },
+              { name: 'Email Support', included: true }
+            ],
+            badges: { popular: false, bestValue: false }
+          },
+          {
+            id: '2',
+            name: 'Standard Plan',
+            price: 20,
+            quota: 200,
+            features: [
+              { name: '200GB Storage', included: true },
+              { name: 'Advanced Analytics', included: true },
+              { name: 'Priority Support', included: true }
+            ],
+            badges: { popular: true, bestValue: false }
+          }
+        ],
       offers: [
         {
           id: '1',
