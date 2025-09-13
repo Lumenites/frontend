@@ -75,14 +75,14 @@ const Chatbot = () => {
         <div className="chat-header">
           <div className="header-info">
             <ChatbotIcon />
-            <h2 className="logo-text">LU LUMEN</h2>
+            <h2 className="logo-text">SUB MANAGER</h2>
           </div>
           <button onClick={closeAndReset} className="material-symbols-rounded" aria-label="Close chat"></button>
         </div>
         <div ref={chatBodyRef} className="chat-body">
           <div className="message bot-message">
             <ChatbotIcon />
-            <p className="message-text">Hey there\nHow can I help you today?</p>
+            <p className="message-text">Hi! I&apos;m here to help with your subscription management needs. What can I assist you with today?</p>
           </div>
           {chatHistory.map((chat, index) => (
             <ChatMessage key={index} chat={chat} />
