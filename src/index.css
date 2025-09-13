@@ -1,0 +1,46 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  }
+  body {
+    @apply bg-white text-neutral-900 dark:bg-dark dark:text-white;
+  }
+}
+
+@layer components {
+  .primary-btn {
+    @apply bg-gradient-to-r from-primary to-secondary duration-300 py-2 px-6 text-white rounded-full hover:scale-105 shadow-lg shadow-primary/20;
+  }
+  .secondary-btn {
+    @apply bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 rounded-full py-2 px-6 hover:opacity-90;
+  }
+  .brand-gradient {
+    @apply bg-gradient-to-r from-primary via-secondary to-accent;
+  }
+}
+
+.animated-wrapper {
+  animation-name: move-wrapper;
+  animation-duration: 25s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+  position: absolute;
+}
+
+@keyframes move-wrapper {
+  0% {
+    transform: translate(150%, 30%) rotate(0) scale(0.8);
+  }
+  50% {
+    transform: translate(60vw, 0vh) rotate(150deg) scale(1.2);
+  }
+  to {
+    transform: translate(40vw, 40vh) rotate(0deg) scale(0.8);
+  }
+}
