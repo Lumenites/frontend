@@ -1,8 +1,7 @@
 import React from "react";
 const BANNER_3D_1 = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1600&auto=format&fit=crop";
-import { BiPlayCircle } from "react-icons/bi";
 
-const Banner = ({ togglePlay }) => {
+const Banner = () => {
   return (
     <div className="py-12 sm:py-0 relative">
       <div className="container min-h-[620px] flex items-center">
@@ -34,16 +33,6 @@ const Banner = ({ togglePlay }) => {
                   className="primary-btn"
                 >
                   View Analytics
-                </button>
-                <button
-                  data-aos="fade-up"
-                  data-aos-delay="700"
-                  onClick={togglePlay}
-                  className="flex items-center gap-2 secondary-btn"
-                >
-                  {" "}
-                  <BiPlayCircle className="text-3xl" />
-                  Watch Demo
                 </button>
               </div>
             </div>
