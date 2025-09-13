@@ -39,13 +39,14 @@ export default function AdminPlans() {
 	};
 
 	return (
-		<div className="p-6">
+		<div className="p-6 bg-white dark:bg-black text-black dark:text-white duration-300 rounded-xl shadow-sm">
 			<PlanTable
 				plans={plans}
 				onEdit={handleEdit}
 				onDelete={handleDelete}
 				onAdd={handleAdd}
 			/>
+
 			<PlanModal
 				isOpen={isModalOpen}
 				onClose={() => setModalOpen(false)}

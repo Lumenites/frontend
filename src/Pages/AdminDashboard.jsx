@@ -7,9 +7,9 @@ export default function AdminDashboard() {
 	const [activeTab, setActiveTab] = useState("plans");
 
 	return (
-		<div className="flex h-screen">
+		<div className="flex h-screen bg-white dark:bg-black text-black dark:text-white duration-300">
 			{/* Sidebar */}
-			<aside className="w-64 bg-black text-white backdrop-blur-sm shadow-md p-6">
+			<aside className="w-64 bg-gray-100 dark:bg-gray-900 backdrop-blur-sm shadow-md p-6 duration-300">
 				<h1 className="text-2xl font-bold mb-8 text-blue-600">
 					Admin Panel
 				</h1>
@@ -17,10 +17,10 @@ export default function AdminDashboard() {
 				<nav className="space-y-3">
 					<button
 						onClick={() => setActiveTab("plans")}
-						className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-left transition ${
+						className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-left transition duration-200 ${
 							activeTab === "plans"
-								? "bg-black/80 text-blue-700 font-semibold"
-								: "text-gray-600 hover:bg-gray-50"
+								? "bg-blue-100 text-blue-700 dark:bg-blue-600 dark:text-white font-semibold"
+								: "hover:bg-gray-200 dark:hover:bg-gray-800"
 						}`}
 					>
 						<ClipboardList size={18} />
@@ -29,10 +29,10 @@ export default function AdminDashboard() {
 
 					<button
 						onClick={() => setActiveTab("discounts")}
-						className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-left transition ${
+						className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-left transition duration-200 ${
 							activeTab === "discounts"
-								? "bg-blue-100 text-blue-700 font-semibold"
-								: "text-gray-600 hover:bg-gray-50"
+								? "bg-blue-100 text-blue-700 dark:bg-blue-600 dark:text-white font-semibold"
+								: "hover:bg-gray-200 dark:hover:bg-gray-800"
 						}`}
 					>
 						<Percent size={18} />
@@ -42,7 +42,7 @@ export default function AdminDashboard() {
 			</aside>
 
 			{/* Main content */}
-			<main className="flex-1 bg-black text-white p-6 overflow-y-auto">
+			<main className="flex-1 p-6 overflow-y-auto duration-300">
 				{activeTab === "plans" && <AdminPlans />}
 				{activeTab === "discounts" && <AdminDiscounts />}
 			</main>
